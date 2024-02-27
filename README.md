@@ -49,9 +49,6 @@ process Main =
   { Lock(lock) | User(user₁, lock) | User(user₂, lock) }
 ```
 
-For questions, suggestions and bug reports please contact [Luca
-Padovani](http://www.di.unito.it/~padovani/index.html).
-
 Installation Instructions
 -------------------------
 
