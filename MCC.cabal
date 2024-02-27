@@ -1,0 +1,70 @@
+name:                MCC
+version:             1.1
+synopsis:            Mailbox Calculus Checker
+homepage:            http://www.di.unito.it/~padovani/Software/MCC/index.html
+license:             GPL-3
+license-file:        LICENSE
+author:              Luca Padovani
+maintainer:          luca.padovani@unito.it
+copyright:           (c) 2018 Luca Padovani
+category:            Language
+build-type:          Simple
+extra-source-files:  ChangeLog.md,
+                     README.md,
+                     lash64.diff,
+                     examples/*.mc,
+                     errors/*.mc,
+                     emacs/mc.el,
+                     Makefile
+cabal-version:       >=1.18
+
+Flag Z3
+  Description:       Use Z3 solver instead of LASH
+  Default:           False
+
+executable mcc
+  main-is:           Main.hs
+  other-modules:     Aux,
+                     Parser,
+                     Lexer,
+                     Language,
+                     Render,
+                     MultiSet,
+                     Dependencies,
+                     Pattern,
+                     Exceptions,
+                     Inference,
+                     Constraints,
+                     Validation,
+                     Presburger.Formula
+  other-extensions:  CPP,
+                     ForeignFunctionInterface
+
+  build-depends:     base >=4.9,
+                     containers >=0.5,
+                     mtl >=2.2,
+                     array >=0.5,
+                     time >=1.5,
+                     filepath >=1.4,
+                     random >=1.1,
+                     data-partition >=0.3,
+                     prettyprinter >=1.0,
+                     prettyprinter-ansi-terminal >=1.0
+
+  if flag(Z3)
+    cpp-options:     -DUSE_Z3
+    build-depends:   z3 >=4.1
+    other-modules:   Presburger.Z3.Solver
+  else
+    c-sources:       src/lash_trampoline.c
+    include-dirs:    lash/src/lash-core,
+                     lash/src/ndd
+    ld-options:      lash/lib/lash-core.o
+                     lash/lib/lash-arith.o
+                     lash/lib/ndd-package.o
+    other-modules:   Presburger.Lash.Automaton,
+                     Presburger.Lash.Solver
+
+  hs-source-dirs:    src
+  build-tools:       alex, happy
+  default-language:  Haskell2010

@@ -18,3 +18,21 @@
 │ Copyright 2018 Luca Padovani                                      ║
 ╘═══════════════════════════════════════════════════════════════════╝
 -}
+
+module MultiSet where
+
+import qualified Data.Map.Strict as M
+
+type MultiSet a = M.Map a Int
+
+empty :: MultiSet a
+empty = M.empty
+
+singleton :: a -> MultiSet a
+singleton x = M.singleton x 1
+
+union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
+union = M.unionWith (+)
+
+occur :: Ord a => a -> MultiSet a -> Int
+occur = M.findWithDefault 0

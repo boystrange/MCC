@@ -18,3 +18,38 @@
 │ Copyright 2018 Luca Padovani                                      ║
 ╘═══════════════════════════════════════════════════════════════════╝
 -}
+
+module Exceptions where
+
+import Language
+import Render
+import Control.Exception
+import Data.List (intersperse)
+
+data MyException
+  = ErrorSyntax String
+  | ErrorMultipleInterfaceDefinitions IName
+  | ErrorMultipleMessageDefinitions Tag
+  | ErrorMultipleProcessDefinitions PName
+  | ErrorMultipleNameDeclarations Name
+  | ErrorUnknownIdentifier String String
+  | ErrorTypeMismatch String
+  | ErrorArityMismatch Pos String Int Int
+  | ErrorInvalidType String
+  | ErrorCyclicDependencyGraph String
+
+instance Exception MyException
+
+instance Show MyException where
+  show (ErrorSyntax msg) = msg
+  show (ErrorMultipleMessageDefinitions tag) = "multiple message definitions: " ++ showWithPos tag
+  show (ErrorMultipleInterfaceDefinitions iname) = "multiple interface definitions: " ++ showWithPos iname
+  show (ErrorMultipleProcessDefinitions pname) = "multiple process definitions: " ++ showWithPos pname
+  show (ErrorUnknownIdentifier kind name) = "unknown " ++ kind ++ ": " ++ name
+  show (ErrorMultipleNameDeclarations u) = "multiple declarations: " ++ showWithPos u
+  show (ErrorTypeMismatch msg) = "type error: " ++ msg
+  show (ErrorArityMismatch pos kind expected actual) =
+    show pos ++ "arity mismatch for " ++ kind ++ ": expected " ++
+    show expected ++ ", actual " ++ show actual
+  show (ErrorCyclicDependencyGraph msg) = "cyclic dependencies: " ++ msg
+  show (ErrorInvalidType msg) = "invalid type: " ++ msg

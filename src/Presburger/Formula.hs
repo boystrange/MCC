@@ -18,3 +18,51 @@
 │ Copyright 2018 Luca Padovani                                      ║
 ╘═══════════════════════════════════════════════════════════════════╝
 -}
+
+module Presburger.Formula
+  (Expression(..),
+   Relation(..),
+   Formula(..),
+   Goal(..))
+where
+
+data Expression = Const Int
+                | Var String
+                | Add Expression Expression
+                | Sub Expression Expression
+                | Mul Int Expression
+
+instance Show Expression where
+  show (Const n) = show n
+  show (Var x) = x
+  show (Add e f) = "(" ++ show e ++ " + " ++ show f ++ ")"
+  show (Sub e f) = "(" ++ show e ++ " - " ++ show f ++ ")"
+  show (Mul n e) = show n ++ " × " ++ show e
+
+data Relation = RelEQ | RelLE | RelLT
+
+instance Show Relation where
+  show RelEQ = "="
+  show RelLE = "≤"
+  show RelLT = "<"
+
+data Formula = FALSE
+             | TRUE
+             | Rel Relation Expression Expression
+             | And Formula Formula
+             | Or Formula Formula
+             | Not Formula
+             | Forall String Formula
+             | Exists String Formula
+
+instance Show Formula where
+  show FALSE = "⊥"
+  show TRUE = "⊤"
+  show (Rel rel e f) = "(" ++ show e ++ " " ++ show rel ++ " " ++ show f ++ ")"
+  show (And e f) = "(" ++ show e ++ " ∧ " ++ show f ++ ")"
+  show (Or e f) = "(" ++ show e ++ " ∨ " ++ show f ++ ")"
+  show (Not e) = "¬" ++ show e
+  show (Forall x e) = "∀" ++ x ++ ":" ++ show e
+  show (Exists x e) = "∃" ++ x ++ ":" ++ show e
+
+data Goal = Implication [String] Formula Formula

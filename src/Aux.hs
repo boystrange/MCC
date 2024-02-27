@@ -18,3 +18,8 @@
 │ Copyright 2018 Luca Padovani                                      ║
 ╘═══════════════════════════════════════════════════════════════════╝
 -}
+
+module Aux where
+
+mapSnd :: (a -> b) -> [(c, a)] -> [(c, b)]
+mapSnd f = map (\(x, y) -> (x, f y))
